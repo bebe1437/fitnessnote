@@ -7,58 +7,85 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    let items = ["Shoulder Press", "Bench Press", "Deadlift", "Back Squat", "Front Squat"]
+    let container: NSPersistentContainer? =
+        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
     
-    @IBOutlet weak var shoulderPress: UITextField!
-    @IBOutlet weak var benchPress: UITextField!
-    @IBOutlet weak var deadlift: UITextField!
-    @IBOutlet weak var backSquat: UITextField!
-    @IBOutlet weak var frontSquat: UITextField!
+    let items = ["Shoulder Press", "Bench Press", "Deadlift", "Back Squat", "Front Squat"]
+    var records = [0.0,0.0,0.0,0.0,0.0]
+    
+    @IBOutlet weak var editable: UISwitch!
+    
+    @IBOutlet weak var prView: UICollectionView!
+    @IBOutlet weak var trainingView: UICollectionView!
+    
+    @IBAction func editSwitch(_ sender: UISwitch) {
+        
+        for cell in prView.visibleCells{
+            let prCell = cell as! PersonalRecordCell
+            print("\(sender.isOn)")
+            print("\(prCell.itemLabel.text!)")
+            prCell.recordText.isUserInteractionEnabled = sender.isOn
+            prCell.recordText.isEnabled = sender.isOn
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let toolbar = UIToolbar(frame: CGRect(x: 20.0, y:90.0, width: 280.0, height: 44.0))
-        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(self.doneClicked))
+        //init workout items
+        let count = preload()
+        if count == 0{
+            initWorkoutItem()
+        }
         
-        toolbar.setItems([doneButton], animated: false)
-        
-        shoulderPress.inputAccessoryView = toolbar
-        benchPress.inputAccessoryView = toolbar
-        deadlift.inputAccessoryView = toolbar
-        backSquat.inputAccessoryView = toolbar
-        frontSquat.inputAccessoryView = toolbar
-//
-//        shoulderPress.delegate = self as? UITextFieldDelegate
-//        benchPress.delegate = self as? UITextFieldDelegate
-//        deadlift.delegate = self as? UITextFieldDelegate
-//        backSquat.delegate = self as? UITextFieldDelegate
-//        frontSquat.delegate = self as? UITextFieldDelegate
     }
     
     @objc func doneClicked(){
         view.endEditing(true)
     }
-  
-//
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool{
-//        textField.resignFirstResponder()
-//        return true
-//    }
-//
-    @IBAction func save(_ sender: UIBarButtonItem) {
+    
+    func preload() -> Int{
+        print("preload")
         
-        print("shoulderPress：\(shoulderPress.text!)")
-        print("benchPress：\(benchPress.text!)")
-        print("deadlift：\(deadlift.text!)")
-        print("backSquat：\(backSquat.text!)")
-        print("frontSquat：\(frontSquat.text!)")
-        
+        let context = container?.viewContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "WorkoutItem")
+        request.returnsObjectsAsFaults = false
+        do{
+            let result = try context?.fetch(request)
+            for data in result as! [NSManagedObject]{
+                print(data.value(forKey: "itemName") as! String)
+            }
+            return (result?.count)!
+        }catch{
+            print("Failed")
+            return Int(0)
+        }
     }
     
+    func initWorkoutItem(){
+        print("initWorkoutItem")
+        
+        let context = container?.viewContext
+        
+        var index = 0
+        for item in items {
+            let workoutItem = WorkoutItem(context: context!)
+            workoutItem.setValue(index, forKey: "itemId")
+            workoutItem.setValue(item, forKey: "itemName")
+            index += 1
+        }
+        
+        do{
+            try context?.save()
+            print("Sucessful saving")
+        } catch{
+            print("Failed saving")
+        }
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
@@ -66,37 +93,36 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trainingMenuCell", for: indexPath) as! TrainingMenuCell
-        
         let itemValue = items[indexPath.row]
-        cell.item.text = itemValue
-        
         print("row:\(indexPath.row), value:\(itemValue)")
-        switch(itemValue){
-        case "Shoulder Press":
-            updateTrainingMenu(Cell: cell, PRText: shoulderPress)
-            break
-        case "Bench Press":
-            updateTrainingMenu(Cell: cell, PRText: benchPress)
-            break
-        case "Deadlift":
-            updateTrainingMenu(Cell: cell, PRText: deadlift)
-            break
-        case "Front Squat":
-            updateTrainingMenu(Cell: cell, PRText: frontSquat)
-            break
-        case "Back Squat":
-            updateTrainingMenu(Cell: cell, PRText: backSquat)
-            break
-        default:
-            break
+        
+        if collectionView == self.trainingView{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trainingMenuCell", for: indexPath) as! TrainingMenuCell
+            cell.item.text = itemValue
+            updateTrainingMenu(Cell: cell, PR: records[indexPath.row])
+            return cell
         }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalRecordCell", for: indexPath) as! PersonalRecordCell
+        cell.itemLabel.text = itemValue
+        print("enabled:\(editable.isOn)")
+        cell.recordText.isUserInteractionEnabled = editable.isOn
+        if records[indexPath.row] != 0.0 {
+            cell.recordText.text = String(records[indexPath.row])
+        }
+        
+        //keyboard: doneBarButton
+        let toolbar = UIToolbar(frame: CGRect(x: 20.0, y:90.0, width: 280.0, height: 44.0))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(self.doneClicked))
+        
+        toolbar.setItems([doneButton], animated: false)
+        cell.recordText.inputAccessoryView = toolbar
         
         return cell
     }
     
-    private func updateTrainingMenu(Cell cell: TrainingMenuCell, PRText prText: UITextField!){
-        let pr = prText.text != nil && prText.text! != "" ? Double(prText.text!)! : 0
+    private func updateTrainingMenu(Cell cell: TrainingMenuCell, PR value: Double){
+        let pr = value
         
         cell.repo12.text = String(pr * 0.75)
         cell.repo8.text = String(pr * 0.80)
