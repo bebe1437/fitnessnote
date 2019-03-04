@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G4015" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18C54" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="PersonalRecord" representedClassName=".PersonalRecord" syncable="YES" codeGenerationType="category">
         <attribute name="itemId" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="itemRecord" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="item" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutItem" inverseName="pr" inverseEntity="WorkoutItem" syncable="YES"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutItem" inverseName="pr" inverseEntity="WorkoutItem" syncable="YES"/>
     </entity>
     <entity name="WorkoutItem" representedClassName=".WorkoutItem" syncable="YES" codeGenerationType="category">
         <attribute name="itemId" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -11,7 +11,7 @@
         <relationship name="pr" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonalRecord" inverseName="item" inverseEntity="PersonalRecord" syncable="YES"/>
     </entity>
     <elements>
-        <element name="WorkoutItem" positionX="-261.66015625" positionY="-145.734375" width="128" height="90"/>
         <element name="PersonalRecord" positionX="-37.4375" positionY="11.5390625" width="128" height="90"/>
+        <element name="WorkoutItem" positionX="-261.66015625" positionY="-145.734375" width="128" height="90"/>
     </elements>
 </model>

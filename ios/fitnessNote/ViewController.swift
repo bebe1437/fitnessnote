@@ -24,12 +24,30 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     @IBAction func editSwitch(_ sender: UISwitch) {
         
+        var index = 0
         for cell in prView.visibleCells{
             let prCell = cell as! PersonalRecordCell
             print("\(sender.isOn)")
             print("\(prCell.itemLabel.text!)")
             prCell.recordText.isUserInteractionEnabled = sender.isOn
             prCell.recordText.isEnabled = sender.isOn
+            
+            let value = prCell.recordText.text!
+            if !sender.isOn && value != ""{
+                records[index] = Double(value)!
+            }
+            index = index+1
+        }
+        
+        if !sender.isOn {
+            updatePersonalRecord()
+            
+            index = 0
+            for cell in trainingView.visibleCells{
+                let trainCell = cell as! TrainingMenuCell
+                updateTrainingMenu(Cell: trainCell, PR: Double(records[index]))
+                index = index+1
+            }
         }
     }
     
@@ -37,10 +55,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         super.viewDidLoad()
         
         //init workout items
-        let count = preload()
+        let count = preloadItem()
         if count == 0{
             initWorkoutItem()
         }
+        //init personal record
+        preloadRecord()
         
     }
     
@@ -48,8 +68,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         view.endEditing(true)
     }
     
-    func preload() -> Int{
-        print("preload")
+    func preloadItem() -> Int{
+        print("preloadItem")
         
         let context = container?.viewContext
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "WorkoutItem")
@@ -63,6 +83,45 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }catch{
             print("Failed")
             return Int(0)
+        }
+    }
+    
+    func preloadRecord(){
+        print("preloadRecord")
+        
+        let context = container?.viewContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "PersonalRecord")
+        request.returnsObjectsAsFaults = false
+        do{
+            let result = try context?.fetch(request)
+            for data in result as! [NSManagedObject]{
+                let itemId = data.value(forKey: "itemId") as! Int
+                let itemRecord = data.value(forKey: "itemRecord") as! Double
+                records[itemId] = itemRecord
+            }
+        }catch{
+            print("Failed")
+        }
+    }
+    
+    func updatePersonalRecord(){
+        print("updatePersonalRecord")
+        
+        let context = container?.viewContext
+        var index = 0
+        for _ in items {
+            let record = PersonalRecord(context: context!)
+            record.setValue(index, forKey: "itemId")
+            record.setValue(records[index], forKey: "itemRecord")
+            index += 1
+        }
+        
+        //TODO alert
+        do{
+            try context?.save()
+            print("Sucessful saving")
+        } catch{
+            print("Failed saving")
         }
     }
     
@@ -98,7 +157,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         if collectionView == self.trainingView{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trainingMenuCell", for: indexPath) as! TrainingMenuCell
-            cell.item.text = itemValue
+            cell.item.text = "\(itemValue)：\(records[indexPath.row])"
             updateTrainingMenu(Cell: cell, PR: records[indexPath.row])
             return cell
         }
