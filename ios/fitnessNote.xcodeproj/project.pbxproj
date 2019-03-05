@@ -16,6 +16,10 @@
 		1570D0C6222BDB3300185A8F /* fitnessNoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1570D0C5222BDB3300185A8F /* fitnessNoteTests.swift */; };
 		1570D0D1222BDB3300185A8F /* fitnessNoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1570D0D0222BDB3300185A8F /* fitnessNoteUITests.swift */; };
 		1570D0E2222BECBD00185A8F /* TrainingMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1570D0E1222BECBD00185A8F /* TrainingMenuCell.swift */; };
+		805443DF222D217B00E71435 /* WorkoutItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805443DE222D217B00E71435 /* WorkoutItem.swift */; };
+		805443E1222D219D00E71435 /* PersonalRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805443E0222D219C00E71435 /* PersonalRecord.swift */; };
+		805443E3222D23F500E71435 /* PersonalRecordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805443E2222D23F500E71435 /* PersonalRecordCell.swift */; };
+		80FA65F2222E4B9300F471FC /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FA65F1222E4B9300F471FC /* Workout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,10 @@
 		1570D0D0222BDB3300185A8F /* fitnessNoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fitnessNoteUITests.swift; sourceTree = "<group>"; };
 		1570D0D2222BDB3300185A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1570D0E1222BECBD00185A8F /* TrainingMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingMenuCell.swift; sourceTree = "<group>"; };
+		805443DE222D217B00E71435 /* WorkoutItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutItem.swift; sourceTree = "<group>"; };
+		805443E0222D219C00E71435 /* PersonalRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRecord.swift; sourceTree = "<group>"; };
+		805443E2222D23F500E71435 /* PersonalRecordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRecordCell.swift; sourceTree = "<group>"; };
+		80FA65F1222E4B9300F471FC /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,10 +109,13 @@
 		1570D0AC222BDB2C00185A8F /* fitnessNote */ = {
 			isa = PBXGroup;
 			children = (
+				805443D9222CC5BC00E71435 /* data */,
 				1570D0AF222BDB2D00185A8F /* ViewController.swift */,
 				1570D0B1222BDB2D00185A8F /* Main.storyboard */,
+				805443E2222D23F500E71435 /* PersonalRecordCell.swift */,
 				1570D0E1222BECBD00185A8F /* TrainingMenuCell.swift */,
 				1570D0DE222BDB9B00185A8F /* supportting files */,
+				80FA65F1222E4B9300F471FC /* Workout.swift */,
 			);
 			path = fitnessNote;
 			sourceTree = "<group>";
@@ -134,9 +145,18 @@
 				1570D0B7222BDB3300185A8F /* Assets.xcassets */,
 				1570D0B9222BDB3300185A8F /* LaunchScreen.storyboard */,
 				1570D0BC222BDB3300185A8F /* Info.plist */,
-				1570D0B4222BDB2D00185A8F /* fitnessNote.xcdatamodeld */,
 			);
 			name = "supportting files";
+			sourceTree = "<group>";
+		};
+		805443D9222CC5BC00E71435 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				1570D0B4222BDB2D00185A8F /* fitnessNote.xcdatamodeld */,
+				805443DE222D217B00E71435 /* WorkoutItem.swift */,
+				805443E0222D219C00E71435 /* PersonalRecord.swift */,
+			);
+			name = data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,10 +290,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				805443E1222D219D00E71435 /* PersonalRecord.swift in Sources */,
 				1570D0B0222BDB2D00185A8F /* ViewController.swift in Sources */,
 				1570D0AE222BDB2D00185A8F /* AppDelegate.swift in Sources */,
+				805443E3222D23F500E71435 /* PersonalRecordCell.swift in Sources */,
+				80FA65F2222E4B9300F471FC /* Workout.swift in Sources */,
 				1570D0E2222BECBD00185A8F /* TrainingMenuCell.swift in Sources */,
 				1570D0B6222BDB2D00185A8F /* fitnessNote.xcdatamodeld in Sources */,
+				805443DF222D217B00E71435 /* WorkoutItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
